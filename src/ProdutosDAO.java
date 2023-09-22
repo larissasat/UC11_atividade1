@@ -13,6 +13,9 @@ import java.sql.Connection;
 import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
+
+
 
 
 public class ProdutosDAO {
@@ -46,17 +49,69 @@ public class ProdutosDAO {
          
         }
         
-        public ArrayList<ProdutosDTO> listarProdutos(){
+    
+        public ProdutosDTO listarProdutos(String nome) {
+            
+            conn = new conectaDAO().connectDB();
+            
+            String sql = "SELECT * FROM produtos WHERE nome LIKE ?";
+                try {
+                        PreparedStatement stmt = conn.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE,
+                            ResultSet.CONCUR_UPDATABLE);
+                                               
+                        stmt.setString(1, "%" + nome + "%"); 
+                            
+                        ResultSet rs = stmt.executeQuery();
+                        rs.next();
+                        
+                        ProdutosDTO produto = new ProdutosDTO();   
+                        rs.first(); 
+                        
+                        produto.setId(rs.getInt("id"));
+                        produto.setNome(rs.getString("nome"));
+                        produto.setValor(rs.getInt("valor"));
+                        produto.setStatus(rs.getString("status"));
+                       
+                        
+                        return produto;
+                        
+                        
+                } catch (Exception e) {
+                        System.out.println("erro: " + e.getMessage());
+                        return null;
+                    }
         
-        return listagem;
-    }    
+        }
+    
+
+        public ArrayList<ProdutosDTO> listarProdutos(){
+            
+            conn = new conectaDAO().connectDB();
+            
+            String sql = "SELECT id, nome, valor, status FROM produtos";
+            try {
+                    PreparedStatement stmt = this.conn.prepareStatement(sql);
+                    ResultSet rs = stmt.executeQuery();                           
+                    
+                    List<ProdutosDTO> listagem = new ArrayList<>();
+                    
+                    while (rs.next()) { 
+                        ProdutosDTO produto = new ProdutosDTO();
+                        
+                        produto.setId(rs.getInt("id"));
+                        produto.setNome(rs.getString("nome"));
+                        produto.setValor(rs.getInt("valor"));
+                        produto.setStatus(rs.getString("status"));
+                        
+                        listagem.add(produto);    
+                    }
+                        
+                    return (ArrayList<ProdutosDTO>) listagem;
     
     
-    
-    
+            } catch (Exception e) {
+                return null;
+        }    
     }
-    
-
-    
-
-
+        
+}
