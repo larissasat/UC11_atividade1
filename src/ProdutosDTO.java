@@ -11,7 +11,7 @@ public class ProdutosDTO {
     private int id;
     private String nome;
     private int valor;
-    private String status;
+    private String status = "A venda";
 
     public int getId() {
         return id;
@@ -44,5 +44,27 @@ public class ProdutosDTO {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    @Override
+                public String toString()
+                {
+                    return this.id + nome + valor + status;
+                    
+                }
+                
+                
+           
+                
+                @Override
+                public boolean equals (Object objeto)
+                {
+                    ProdutosDTO e = (ProdutosDTO) objeto;
+                    if (this.id == e.getId()){
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }       
     
 }
