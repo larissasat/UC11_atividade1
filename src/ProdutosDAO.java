@@ -12,8 +12,11 @@ import java.sql.PreparedStatement;
 import java.sql.Connection;
 import javax.swing.JOptionPane;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
@@ -35,12 +38,13 @@ public class ProdutosDAO {
         conn = new conectaDAO().connectDB();
         
         
-        String sql = "INSERT INTO produtos (nome, valor) VALUES "
-                        + "(?, ?)"; 
+        String sql = "INSERT INTO produtos (nome, valor, status) VALUES "
+                        + "(?, ?, ?)"; 
                 try {
                     PreparedStatement stmt = this.conn.prepareStatement(sql);
                     stmt.setString(1, produto.getNome());
                     stmt.setInt(2, produto.getValor());
+                    stmt.setString(3, produto.getStatus());
                     stmt.execute();
             
                 } catch (Exception e) {
@@ -113,5 +117,27 @@ public class ProdutosDAO {
                 return null;
         }    
     }
+
+    public void venderProduto(ProdutosDTO produto) {
+        
+        conn = new conectaDAO().connectDB(); 
+        
+        String sql = "UPDATE produtos SET status=? WHERE id=?";
+                
+        try {
+                PreparedStatement stmt = conn.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+                
+                stmt.setString(1, produto.getStatus());                               
+                stmt.setInt(2, produto.getId()); 
+               
+                stmt.execute();
+            
+                } catch (Exception e) {
+                    System.out.println("Erro ao vender o produto: " + e.getMessage());
+                }
+
+    }
+
         
 }
