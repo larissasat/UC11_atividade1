@@ -44,7 +44,7 @@ public class ListagemVendas extends javax.swing.JFrame {
 
     public ListagemVendas() {
         initComponents();
-        //listarProdutosVendidos();
+        listarProdutosVendidos();
     }
 
     /**
